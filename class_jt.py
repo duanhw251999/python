@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
 
+'''
+日期: 2019-04-21
+作者: 段宏伟
+'''
+
 class Fileinfo(object):
     __datName=""#数据文件名称
     __size=""#数据文件大小
