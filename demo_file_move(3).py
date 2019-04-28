@@ -24,20 +24,10 @@ jt_month 集团月目录
 '''
 
 
-# paths={"hs_day":'E:/PUT_JT_DATA/The_Temp_Data/The_TEST_Data/DAY/'
-#        ,"ods_day":'E:/PUT_JT_DATA/The_Temp_Data/The_TEST_Data/MONTH/'
-#        ,"jt_day":'E:/PUT_JT_DATA/The_Temp_Data/The_TEST_Data/DayData/'
-#        ,'day_err':'E:/PUT_JT_DATA/The_Temp_Data/The_TEST_Data/err/'}
-paths={"hs_day":'D:/personal/DUANHW/test/A/'
-,"ods_day":'D:/personal/DUANHW/test/B/'
-,"jt_day":'D:/personal/DUANHW/test/C/'
-,"hs_month":''
-,"ods_month":''
-,"bonc_month":''
-,"kdgc_month":''
-,"jt_month":''
-,"day_err":'D:/personal/DUANHW/test/error/'
-,"month_err":''}
+paths={"hs_day":'E:/PUT_JT_DATA/The_Temp_Data/The_EDW_Data/DAY/'
+        ,"ods_day":'E:/PUT_JT_DATA/The_Temp_Data/The_ODS_Data/DAY/'
+        ,"jt_day":'E:/PUT_JT_DATA/The_Temp_Data/The_TEST_Data/DayData/'
+        ,'day_err':'E:/PUT_JT_DATA/The_Temp_Data/The_TEST_Data/err/'}
 
 
 
@@ -65,32 +55,6 @@ paths={"hs_day":'D:/personal/DUANHW/test/A/'
         20190420.20190419  如果账期是20190419，通过  1
         20190419.20190419  如果账期是20190419，通过  0
         20190420.20190418  判断是否是华盛数据，如果是，判断账期是否是20190419，如果账期合适通过，如果账期不合适，不通过
-
-2019/04/22  05:21                57 DAPD_COMBO_SUM_CNT.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                61 DAPD_DIM_MAPPING_OFFER.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                58 DAPD_DIM_MAPPING_PD.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                55 DAPD_DIM_PO_SPEC.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                54 DAPD_DIM_REGION.20190421.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                56 DAPD_DIM_SUM_TYPE.20190421.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                53 DAPD_EVT_TRMNL.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                66 DAPD_POINT_MANAGE_CUST_DVLP.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                56 DAPD_PRD_ITV_INST.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21               605 DAPD_PRD_PD_INST.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:23                58 DAPD_PRD_PD_INST_WB.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:23             1,155 DAPD_PRD_PO_INST.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:26             1,140 DAPD_PRD_PO_MEMBER.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                53 DAPD_PR_BDM_PA.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                53 DAPD_PR_BDM_PM.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                53 DAPD_PR_BDM_PP.20190422.20190421.00.000.000.862.CHECK
-2019/04/22  05:21                53 DAPD_PR_BDM_PS.20190422.20190421.00.000.000.862.CHECK
-DAPD_EVT_CPT_USER.20190422.20190420.00.000.000.862.CHECK.RPT
-DAPD_EVT_CPT_BEH.20190422.20190420.00.000.000.862.CHECK.RPT
-
-
-DAPD_POINT_MANAGE_CUST_DVLP.20190328.20190327.00.000.000.862.CHECK.ERR
-DAPD_POINT_MANAGE_CUST_DVLP.20190328.20190327.00.001.001.862.DAT.gz.CON.ERR
-DAPD_PRD_PO_MEMBER.20180906.20180905.00.001.002.862.ERR
-
 '''
 
 def arthropoda(path):
@@ -120,7 +84,19 @@ def arthropoda(path):
 
 def checkFileOper(absPath):
     [dirname,filename]=os.path.split(absPath)
-    if valCheckDate(filename)==1:
+    (datName,d1,d2,d3)=(filename.split('.')[0],filename.split('.')[1],filename.split('.')[2],Helper.dateNow(0))
+    # if Helper.dateOper(d1,d3)==1 and Helper.dateOper(d3,d2)==1:
+    #    pass #这种情况，仅做保留，不做挪动，也不上传
+    # elif Helper.dateOper(d1,d3)==0 and Helper.dateOper(d3,d2)==2:
+    #    pass #这种情况，直接上传
+
+    dtflag=0
+    if Helper.dateOper(d1,d2)==2:
+       if Helper.dateOper(d1,d3)==0 and Helper.dateOper(d3,d2)==2:
+           dtflag=1
+    elif Helper.dateOper(d1,d2)==1 or Helper.dateOper(d1,d2)==0:
+           dtflag=1
+    if dtflag==1:
         vals=readCheck(absPath)
         count_check=len(vals)#文件个数 根据check文件中的记录行数计算得出
         count_valngz=0
@@ -135,17 +111,7 @@ def checkFileOper(absPath):
                 break
         if count_check*2==count_valngz:
             move2(filename.split(".")[0],dirname)
-#检查CHECK文件的日期与当期日期以及账期是否符合要求
-def valCheckDate(filename):
-    # d1 生成日期 d2 数据账期 d3 当前日期
-    (d1,d2,d3)=(filename.split('.')[1],filename.split('.')[2],Helper.dateNow(0))
-    dtflag=0
-    if Helper.dateOper(d1,d2)==2:
-       if Helper.dateOper(d1,d3)==0 and Helper.dateOper(d3,d2)==2:
-           dtflag=1
-    elif Helper.dateOper(d1,d2)==1 or Helper.dateOper(d1,d2)==0:
-           dtflag=1
-    return dtflag
+
 '''
 读取CHECK文件内容
 '''
@@ -245,6 +211,7 @@ def datDate(path):
         else:
             print("%s--非合理账期内数据，将被移动到错误目录"%f)
             Helper.move(absPath,paths["day_err"])
+
 #回执文件的查找
 def checkRPT(path):
     narmal={}
@@ -280,8 +247,9 @@ if __name__ == '__main__':
         while True:
             print('%s 进程号 %s ... /\/\(**<o>**)/\/\\' % ("代号:蜘蛛", os.getpid()))
             print ("Start : %s" % time.ctime())
-            time.sleep(15)
+            time.sleep(5*60)
             arthropoda(paths["hs_day"])
+            arthropoda(paths["ods_day"])
             print ("End : %s" % time.ctime())
     except Exception  as e:
             print(e)
